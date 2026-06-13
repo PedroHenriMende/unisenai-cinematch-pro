@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description"
+    content="CineMatch Pro — seu catálogo pessoal de filmes, com busca por título e filtro por gênero." />
+  <title>CineMatch Pro · Catálogo</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+
+<body>
+
+  <nav class="navbar" role="navigation" aria-label="Navegação principal">
+    <a href="index.html" class="nav-brand">Cine<span>Match</span> Pro</a>
+    <ul class="nav-links">
+      <li><a href="index.html">Cadastrar</a></li>
+      <li><a href="catalogo.html" class="active" aria-current="page">Catálogo</a></li>
+      <li>
+        <a href="https://www.imdb.com/chart/top/" target="_blank" rel="noopener noreferrer">
+          Sugestões ↗
+        </a>
+      </li>
+    </ul>
+  </nav>
+
+  <header class="page-header">
+    <h1>Meu <em>Catálogo</em></h1>
+    <p>Todos os filmes que você cadastrou, em um só lugar.</p>
+  </header>
+
+  <section class="stats-strip" aria-label="Estatísticas do catálogo">
+    <div class="stat-item">
+      <span class="stat-value" id="stat-total">0</span>
+      <span class="stat-label">Filmes</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-value" id="stat-horas">0</span>
+      <span class="stat-label">Horas assistidas</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-value" id="stat-minutos">0</span>
+      <span class="stat-label">Total em minutos</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-value" id="stat-generos">0</span>
+      <span class="stat-label">Gêneros</span>
+    </div>
+  </section>
+
+  <section class="catalog-controls" aria-label="Filtros do catálogo">
+    <input type="search" id="busca" class="search-input" placeholder="Buscar por título..."
+      aria-label="Buscar filme por título" autocomplete="off" />
+    <select id="filtro-genero" class="filter-select" aria-label="Filtrar por gênero">
+      <option value="">Todos os gêneros</option>
+    </select>
+  </section>
+
+  <main>
+    <section class="film-grid" id="film-grid" aria-label="Catálogo de filmes"></section>
+  </main>
+
+  <div class="modal-backdrop" id="modal" role="dialog" aria-modal="true" aria-labelledby="modal-titulo">
+    <div class="modal">
+      <div class="modal-header">
+        <span class="modal-title" id="modal-titulo">Trailer</span>
+        <button class="modal-close" id="modal-close" aria-label="Fechar trailer">✕</button>
+      </div>
+      <div class="modal-body">
+        <iframe id="trailer-frame" title="Trailer do filme" allow="autoplay; fullscreen" allowfullscreen></iframe>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/main.js"></script>
+  <script src="js/display.js"></script>
+  <script>
+
+    const grid = document.getElementById('film-grid');
+    const inputBusca = document.getElementById('busca');
+    const selGenero = document.getElementById('filtro-genero');
+    const modal = document.getElementById('modal');
+    const modalTitulo = document.getElementById('modal-titulo');
+    const trailerFrame = document.getElementById('trailer-frame');
+    const btnClose = document.getElementById('modal-close');
+
+    const todosFilmes = Storage.listar();
+
+    /* ── Stats (display.js) ── */
+    renderStats();
+
+    /* ── Popular select de gêneros (display.js) ── */
+    popularFiltroGeneros(todosFilmes, selGenero);
+
+    /* ── Anexar evento de trailer a cada card após renderização ── */
+    function renderComEventos(lista) {
+      renderGrid(lista, grid);
+
+      grid.querySelectorAll('.film-card').forEach((article, idx) => {
+        const filme = lista[idx];
+        if (!filme) return;
+
+        const playBtn = article.querySelector('.play-btn');
+        const deleteBtn = article.querySelector('.delete-btn');
+
+        if (playBtn) {
+          playBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            abrirTrailer(filme);
+          });
+        }
+
+        if (deleteBtn) {
+          deleteBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+
+            const confirmar = confirm(
+              `Deseja remover "${filme.titulo}" do catálogo?`
+            );
+
+            if (!confirmar) return;
+
+            Storage.remover(filme.id);
+
+            const filmesAtualizados = Storage.listar();
+
+            renderStats();
+            renderComEventos(filmesAtualizados);
+          });
+        }
+
+        article.addEventListener('keydown', (e) => {
+          if ((e.key === 'Enter' || e.key === ' ') && filme.youtubeId) {
+            e.preventDefault();
+            abrirTrailer(filme);
+          }
+        });
+      });
+    }
+
+    /* ── Filtrar lista com filter() ── */
+    function filtrar() {
+      const termo = inputBusca.value.toLowerCase().trim();
+      const genero = selGenero.value;
+
+      const resultado = Storage.listar().filter(f => {
+        const bateTitulo = !termo || f.titulo.toLowerCase().includes(termo);
+        const bateGenero = !genero || f.genero === genero;
+
+        return bateTitulo && bateGenero;
+      });
+
+      renderComEventos(resultado);
+    }
+
+    inputBusca.addEventListener('input', filtrar);
+    selGenero.addEventListener('change', filtrar);
+
+    /* ── Modal trailer ── */
+    function abrirTrailer(filme) {
+      const url = filme.trailerUrl();
+      if (!url) return;
+      modalTitulo.textContent = `${filme.titulo} — Trailer`;
+      trailerFrame.src = url;
+      modal.classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function fecharModal() {
+      modal.classList.remove('open');
+      trailerFrame.src = '';
+      document.body.style.overflow = '';
+    }
+
+    btnClose.addEventListener('click', fecharModal);
+
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) fecharModal();
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') fecharModal();
+    });
+
+    /* ── Init ── */
+    renderComEventos(todosFilmes);
+  </script>
+</body>
+
+</html>

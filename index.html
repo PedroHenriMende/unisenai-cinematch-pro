@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="CineMatch Pro — cadastre e gerencie seu catálogo pessoal de filmes." />
+  <title>CineMatch Pro · Cadastro</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+  <nav class="navbar" role="navigation" aria-label="Navegação principal">
+    <a href="index.html" class="nav-brand">Cine<span>Match</span> Pro</a>
+    <ul class="nav-links">
+      <li><a href="index.html" class="active" aria-current="page">Cadastrar</a></li>
+      <li><a href="catalogo.html">Catálogo</a></li>
+      <li>
+        <a href="https://www.imdb.com/chart/top/" target="_blank" rel="noopener noreferrer">
+          Sugestões ↗
+        </a>
+      </li>
+    </ul>
+  </nav>
+
+  <header class="page-header">
+    <h1>Cadastrar <em>Filme</em></h1>
+    <p>Adicione obras ao seu catálogo pessoal. Os dados ficam salvos no seu navegador.</p>
+  </header>
+
+  <section class="stats-strip" aria-label="Estatísticas do catálogo">
+    <div class="stat-item">
+      <span class="stat-value" id="stat-total">0</span>
+      <span class="stat-label">Filmes</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-value" id="stat-horas">0</span>
+      <span class="stat-label">Horas assistidas</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-value" id="stat-minutos">0</span>
+      <span class="stat-label">Total em minutos</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-value" id="stat-generos">0</span>
+      <span class="stat-label">Gêneros</span>
+    </div>
+  </section>
+
+  <main>
+    <section class="form-section" aria-label="Formulário de cadastro">
+
+      <div class="form-card">
+        <h2>Novo Filme</h2>
+
+        <form id="form-filme" novalidate>
+
+          <div class="form-group">
+            <label for="titulo">Título</label>
+            <input
+              type="text"
+              id="titulo"
+              name="titulo"
+              placeholder="Ex: Clube da Luta"
+              required
+              autocomplete="off"
+            />
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="ano">Ano</label>
+              <input
+                type="number"
+                id="ano"
+                name="ano"
+                placeholder="Ex: 1999"
+                min="1888"
+                max="2099"
+                required
+              />
+            </div>
+            <div class="form-group">
+              <label for="duracao">Duração (minutos)</label>
+              <input
+                type="number"
+                id="duracao"
+                name="duracao"
+                placeholder="Ex: 139"
+                min="1"
+                required
+              />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="genero">Gênero</label>
+            <select id="genero" name="genero" required>
+              <option value="" disabled selected>Selecione um gênero</option>
+              <option value="Ação">Ação</option>
+              <option value="Animação">Animação</option>
+              <option value="Aventura">Aventura</option>
+              <option value="Comédia">Comédia</option>
+              <option value="Crime">Crime</option>
+              <option value="Documentário">Documentário</option>
+              <option value="Drama">Drama</option>
+              <option value="Fantasia">Fantasia</option>
+              <option value="Ficção Científica">Ficção Científica</option>
+              <option value="Musical">Musical</option>
+              <option value="Romance">Romance</option>
+              <option value="Suspense">Suspense</option>
+              <option value="Terror">Terror</option>
+              <option value="Thriller">Thriller</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="capa">URL da Imagem (capa)</label>
+            <input
+              type="url"
+              id="capa"
+              name="capa"
+              placeholder="https://..."
+              autocomplete="off"
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="youtubeId">ID do YouTube (trailer)</label>
+            <input
+              type="text"
+              id="youtubeId"
+              name="youtubeId"
+              placeholder="Ex: dQw4w9WgXcQ"
+              autocomplete="off"
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="notas">Notas pessoais</label>
+            <textarea
+              id="notas"
+              name="notas"
+              placeholder="O que você achou? Recomenda para quem?..."
+            ></textarea>
+          </div>
+
+          <button type="submit" class="btn-primary">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+              <path d="M12 5v14M5 12h14"/>
+            </svg>
+            Adicionar ao Catálogo
+          </button>
+
+        </form>
+      </div><!-- /form-card -->
+
+      <!-- PREVIEW CARD -->
+      <aside class="preview-card" aria-label="Pré-visualização do filme">
+        <div id="preview-poster-wrap">
+          <div class="preview-poster-placeholder" aria-hidden="true">
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <rect x="2" y="2" width="20" height="20" rx="2"/>
+              <circle cx="9" cy="9" r="2"/>
+              <path d="m21 15-5-5L5 21"/>
+            </svg>
+            Imagem do pôster
+          </div>
+        </div>
+        <div class="preview-info">
+          <p class="preview-title" id="preview-titulo">Título do Filme</p>
+          <div class="preview-meta">
+            <span id="preview-ano">—</span>
+            <span class="badge" id="preview-genero">Gênero</span>
+            <span id="preview-duracao">—</span>
+          </div>
+        </div>
+      </aside>
+
+    </section><!-- /form-section -->
+  </main>
+
+  <!-- TOAST -->
+  <div class="toast" id="toast" role="status" aria-live="polite">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+      <path d="M20 6 9 17l-5-5"/>
+    </svg>
+    Filme adicionado com sucesso!
+  </div>
+
+  <script src="js/main.js"></script>
+  <script>
+    /* ── Referências DOM ── */
+    const form       = document.getElementById('form-filme');
+    const inputCapa  = document.getElementById('capa');
+    const inputTit   = document.getElementById('titulo');
+    const inputAno   = document.getElementById('ano');
+    const inputDur   = document.getElementById('duracao');
+    const selGenero  = document.getElementById('genero');
+    const toast      = document.getElementById('toast');
+
+    const prevPosterWrap = document.getElementById('preview-poster-wrap');
+    const prevTitulo     = document.getElementById('preview-titulo');
+    const prevAno        = document.getElementById('preview-ano');
+    const prevGenero     = document.getElementById('preview-genero');
+    const prevDuracao    = document.getElementById('preview-duracao');
+
+    /* ── Atualizar preview em tempo real ── */
+    function atualizarPreview() {
+      const url = inputCapa.value.trim();
+
+      if (url) {
+        let img = prevPosterWrap.querySelector('img');
+        if (!img) {
+          img = document.createElement('img');
+          img.className = 'preview-poster';
+          img.alt = 'Pôster do filme cadastrado';
+          prevPosterWrap.innerHTML = '';
+          prevPosterWrap.appendChild(img);
+        }
+        img.src = url;
+        img.onerror = () => {
+          prevPosterWrap.innerHTML = `
+            <div class="preview-poster-placeholder" aria-hidden="true">
+              <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                <rect x="2" y="2" width="20" height="20" rx="2"/>
+                <path d="m8 8 8 8M16 8l-8 8"/>
+              </svg>
+              URL inválida
+            </div>`;
+        };
+      } else {
+        prevPosterWrap.innerHTML = `
+          <div class="preview-poster-placeholder" aria-hidden="true">
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <rect x="2" y="2" width="20" height="20" rx="2"/>
+              <circle cx="9" cy="9" r="2"/>
+              <path d="m21 15-5-5L5 21"/>
+            </svg>
+            Imagem do pôster
+          </div>`;
+      }
+
+      prevTitulo.textContent  = inputTit.value.trim()  || 'Título do Filme';
+      prevAno.textContent     = inputAno.value          || '—';
+      prevGenero.textContent  = selGenero.value         || 'Gênero';
+      const dur = Number(inputDur.value);
+      if (dur > 0) {
+        const h   = Math.floor(dur / 60);
+        const min = dur % 60;
+        prevDuracao.textContent = h > 0 ? `${h}h ${min}min` : `${min}min`;
+      } else {
+        prevDuracao.textContent = '—';
+      }
+    }
+
+    [inputCapa, inputTit, inputAno, inputDur, selGenero].forEach(el => {
+      el.addEventListener('input', atualizarPreview);
+    });
+
+    /* ── Submit ── */
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+
+      const filme = new Filme({
+        titulo:    document.getElementById('titulo').value.trim(),
+        ano:       document.getElementById('ano').value,
+        genero:    document.getElementById('genero').value,
+        duracao:   document.getElementById('duracao').value,
+        capa:      document.getElementById('capa').value.trim(),
+        youtubeId: document.getElementById('youtubeId').value.trim(),
+        notas:     document.getElementById('notas').value.trim(),
+      });
+
+      if (!filme.titulo) {
+        document.getElementById('titulo').focus();
+        return;
+      }
+
+      Storage.salvar(filme);
+      form.reset();
+      atualizarPreview();
+      atualizarStats();
+      mostrarToast();
+    });
+
+    /* ── Toast ── */
+    let toastTimer = null;
+    function mostrarToast() {
+      toast.classList.add('show');
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => toast.classList.remove('show'), 3000);
+    }
+
+    /* ── Stats ── */
+    function atualizarStats() {
+      const s = Storage.estatisticas();
+      document.getElementById('stat-total').textContent   = s.total;
+      document.getElementById('stat-horas').textContent   = s.horas;
+      document.getElementById('stat-minutos').textContent = s.minutos;
+      document.getElementById('stat-generos').textContent = s.generos;
+    }
+
+    /* Init */
+    atualizarStats();
+  </script>
+</body>
+</html>
